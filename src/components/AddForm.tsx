@@ -12,6 +12,7 @@ const AddForm = () => {
   const [detailedTodos, setDetailedTodos] = useLocalStorageState('detailedTodos', [{ task: '', description: '' }]);
   const [detailedInput, setDetailedInput] = useLocalStorageState('detailedInput', { task: '', description: '' });
   const [showErrors, setShowErrors] = useState(false);
+  const [checkDuplicate, setCheckDuplicate] = useState(false);
   const navigate = useNavigate();
 
   const hasEmptyTodos = () => {
@@ -28,7 +29,7 @@ const AddForm = () => {
 
   const handleSubmit = () => {
     setShowErrors(true);
-    if (!hasEmptyTodos() && !hasEmptyDetailedTodos()) {
+    if (!hasEmptyTodos() && !hasEmptyDetailedTodos() && !checkDuplicate) {
       toast.success('Form submitted successfully!', {
         duration: 3000,
         position: 'top-right',
@@ -41,6 +42,10 @@ const AddForm = () => {
     }
   };
 
+  const hasDuplicateTodos = (val: boolean) => {
+    setCheckDuplicate(val)
+  }
+
   return (
     <div className="max-w-xl mx-auto px-4">
       <Toaster />
@@ -52,6 +57,7 @@ const AddForm = () => {
           setTodos={setTodos}
           inputValue={inputValue}
           setInputValue={setInputValue}
+          onChange={hasDuplicateTodos}
         />
 
         <DetailedTodoList
@@ -65,6 +71,7 @@ const AddForm = () => {
           showErrors={showErrors}
           hasEmptyTodos={hasEmptyTodos}
           hasEmptyDetailedTodos={hasEmptyDetailedTodos}
+          hasDuplicateTodos={() => checkDuplicate} 
         />
 
         <button

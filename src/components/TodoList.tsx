@@ -1,14 +1,15 @@
 import { handleAddInitialTodo, handleAddAnotherTodo, handleDeleteTodo, handleUpdateTodo } from '../todoHandlers';
-import { Dispatch, SetStateAction } from 'react';
+import { Dispatch, SetStateAction, ChangeEvent } from 'react';
 
 type TodoListProps = {
   todos: string[];
   setTodos: Dispatch<SetStateAction<string[]>>;
   inputValue: string;
   setInputValue: Dispatch<SetStateAction<string>>;
+  onChange?: (val: boolean) => void
 };
 
-const TodoList = ({ todos, setTodos, inputValue, setInputValue }: TodoListProps) => {
+const TodoList = ({ todos, setTodos, inputValue, setInputValue, onChange }: TodoListProps) => {
   const handlers = {
     todos,
     setTodos,
@@ -19,6 +20,21 @@ const TodoList = ({ todos, setTodos, inputValue, setInputValue }: TodoListProps)
     detailedInput: { task: '', description: '' },
     setDetailedInput: () => {},
   };
+
+  const handleCheckDuplicateTodos = (e: ChangeEvent<HTMLInputElement>, val: string, index: number) => {
+    const todoDuplicateChecker = todos.some((item) => val == item);
+    handleCallback(todoDuplicateChecker);
+
+    return todos.length === 1 && index === 0
+      ? setInputValue(e.target.value)
+      : handleUpdateTodo(handlers, index, e.target.value)
+  }
+
+  const handleCallback = (val: boolean) => {
+    if(onChange) {
+      onChange(val);
+    }
+  }
 
   return (
     <div className="mt-4">
@@ -33,9 +49,7 @@ const TodoList = ({ todos, setTodos, inputValue, setInputValue }: TodoListProps)
               type="text"
               value={todos.length === 1 && index === 0 ? inputValue : todo}
               onChange={(e) =>
-                todos.length === 1 && index === 0
-                  ? setInputValue(e.target.value)
-                  : handleUpdateTodo(handlers, index, e.target.value)
+                handleCheckDuplicateTodos(e, e.target.value, index)
               }
               placeholder="Task Name"
             />

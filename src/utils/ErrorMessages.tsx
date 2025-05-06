@@ -1,4 +1,4 @@
-function ErrorMessages({ showErrors, hasEmptyTodos, hasEmptyDetailedTodos }: { showErrors: boolean; hasEmptyTodos: () => boolean; hasEmptyDetailedTodos: () => boolean }) {
+function ErrorMessages({ showErrors, hasEmptyTodos, hasEmptyDetailedTodos, hasDuplicateTodos }: { showErrors: boolean; hasEmptyTodos: () => boolean; hasEmptyDetailedTodos: () => boolean, hasDuplicateTodos: () => boolean }) {
   if (!showErrors) return null;
 
   return (
@@ -11,6 +11,11 @@ function ErrorMessages({ showErrors, hasEmptyTodos, hasEmptyDetailedTodos }: { s
       {hasEmptyDetailedTodos() && (
         <h2 className="text-red-500 font-bold mt-2">
           TODO LIST with Description has empty values
+        </h2>
+      )}
+      {hasDuplicateTodos() && (
+        <h2 className="text-red-500 font-bold mt-2">
+          TODO LIST has duplicate values
         </h2>
       )}
     </>
